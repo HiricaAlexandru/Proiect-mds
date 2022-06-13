@@ -1,4 +1,4 @@
-# Proiect-mds
+# Mioveni : Dame (Checkers)
 
 ## Team members
 - [Hirica Ioan Alexandru](https://github.com/HiricaAlexandru)
