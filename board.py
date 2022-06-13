@@ -83,3 +83,164 @@ class Board:
                 piece = self.board[row][col]
                 if piece != 0:
                     piece.draw(window)
+
+
+    def winner(self):
+        # Daca rosu a ramas fara piese atunci a castigat negru
+        # Daca negru a ramas fara piese atunci a castigat rosu
+        if self.red_left <= 0:
+            return main.BLACK
+        elif self.black_left <= 0:
+            return main.RED
+        return None
+
+    def get_valid_moves(self, piece):
+        """
+        :param piece: piesa pe care vreau sa o mut la un moment
+        :return: returneaza un dictionar format din posibilele pozitii unde voi muta piesa
+        Piesele rege se pot muta si in sus si in jos, de aceea iau in considerare in ambele cazuri
+        Pasul cu care ma mut reprezinta directia (daca in sus sau in jos)
+        """
+        moves = {}
+        left = piece.col - 1
+        right = piece.col + 1
+        row = piece.row
+        if piece.color == self.user_color or piece.king:
+            moves.update(self._look_left(row - 1, max(row - 3, -1), -1, piece.color, left))
+            moves.update(self._look_right(row - 1, max(row - 3, -1), -1, piece.color, right))
+        if piece.color == self.computer_color or piece.king:
+            moves.update(self._look_left(row + 1, min(row + 3, main.ROWS), 1, piece.color, left))
+            moves.update(self._look_right(row + 1, min(row + 3, main.ROWS), 1, piece.color, right))
+        return moves
+
+    def _look_left(self, start, stop, step, color, left, skipped=[]):
+        """
+        :param start: locul de unde pornesc
+        :param stop: locul unde ma opresc
+        :param step: pasul cu care merg (in sus sau in jos)
+        :param color: culoarea care muta acum
+        :param left: directia in care caut (stanga sau dreapta)
+        :param skipped: lista ce contine piesele peste care am sarit
+        :return: dictionar ce contine locurile unde pot muta piesa selectata inspre stanga
+        Cheia dictionarului va fi pozitia la care vreau sa ma mut formata din tuplu (linie, coloana)
+        Fiecare pozitie ce reprezinta o cheie contine un dictionar care contine pozitiile unde pot ajunge de acolo
+        (Daca sar peste o piesa vreau sa vad daca mai am cum sa sar)
+        (Daca am doar loc liber in casuta respectiva atunci nu mai pot sari mai departe)
+        (Verific doar pentru maxim 3 randuri mai departe adica verific daca am saritura dubla)
+        """
+        moves = {}
+        last = []
+        for r in range(start, stop, step):
+            if left < 0:
+                break
+
+            current = self.board[r][left]
+            if current == 0:
+                if skipped and not last:
+                    break
+                elif skipped:
+                    moves[(r, left)] = last + skipped
+                else:
+                    moves[(r, left)] = last
+
+                if last:
+                    if step == -1:
+                        row = max(r - 3, 0)
+                    else:
+                        row = min(r + 3, main.ROWS)
+                    moves.update(self._look_left(r + step, row, step, color, left - 1, skipped=last))
+                    moves.update(self._look_right(r + step, row, step, color, left + 1, skipped=last))
+                break
+            elif current.color == color:
+                break
+            else:
+                last = [current]
+
+            left -= 1
+
+        return moves
+
+    def _look_right(self, start, stop, step, color, right, skipped=[]):
+        """
+        :param start: locul de unde pornesc
+        :param stop: locul unde ma opresc
+        :param step: pasul cu care merg
+        :param color: culoarea care muta acum
+        :param right: directia in care caut
+        :param skipped: lista ce contine piesele peste care am sarit
+        :return: dictionar ce contine locurile unde pot muta piesa selectata inspre dreapta
+        Cheia dictionarului va fi pozitia la care vreau sa ma mut formata din tuplu (linie, coloana)
+        Fiecare pozitie ce reprezinta o cheie contine un dictionar care contine pozitiile unde pot ajunge de acolo
+        (Daca sar peste o piesa vreau sa vad daca mai am cum sa sar)
+        (Daca am doar loc liber in casuta respectiva atunci nu mai pot sari mai departe)
+        (Verific doar pentru maxim 3 randuri mai departe adica verific daca am saritura dubla)
+        """
+        moves = {}
+        last = []
+        for r in range(start, stop, step):
+            if right >= main.COLUMNS:
+                break
+
+            current = self.board[r][right]
+            if current == 0:
+                if skipped and not last:
+                    break
+                elif skipped:
+                    moves[(r, right)] = last + skipped
+                else:
+                    moves[(r, right)] = last
+
+                if last:
+                    if step == -1:
+                        row = max(r - 3, 0)
+                    else:
+                        row = min(r + 3, main.ROWS)
+                    moves.update(self._look_left(r + step, row, step, color, right - 1, skipped=last))
+                    moves.update(self._look_right(r + step, row, step, color, right + 1, skipped=last))
+                break
+            elif current.color == color:
+                break
+            else:
+                last = [current]
+
+            right += 1
+
+        return moves
+
+    def remove(self, pieces):
+        #Sterg o piesa de pe tabla
+        for piece in pieces:
+            self.board[piece.row][piece.col] = 0
+            if piece != 0:
+                if piece.color == main.RED:
+                    self.red_left -= 1
+                else:
+                    self.black_left -= 1
+
+
+    #Estimari ale scorului
+    def evaluateScore1(self):
+            #diferenta de peise, tinand cont de numarul de dame
+        if self.computer_color == main.BLACK:
+            return self.black_left - self.red_left + (self.black_kings * 0.5 - self.red_kings * 0.5)
+        else:
+            return self.red_left - self.black_left + (self.red_kings * 0.5 - self.black_kings * 0.5)
+
+    def evaluateScore2(self):
+        # diferenta de peise far aa tine cont de numarul de dame
+        if self.computer_color == main.BLACK:
+            return self.black_left - self.red_left
+        else:
+            return self.red_left - self.black_left
+
+    def getAllPieces(self, color):
+        """
+        :param color: culoarea dorita (rosu sau negru)
+        :return: o lista formata din toate piesele de culoarea data ca parametru
+        """
+        pieces = []
+        for r in self.board:
+            for p in r:
+                if p != 0 and p.color == color:
+                    pieces.append(p)
+        return pieces
