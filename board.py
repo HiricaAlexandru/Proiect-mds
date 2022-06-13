@@ -83,3 +83,13 @@ class Board:
                 piece = self.board[row][col]
                 if piece != 0:
                     piece.draw(window)
+
+
+    def winner(self):
+        # Daca rosu a ramas fara piese atunci a castigat negru
+        # Daca negru a ramas fara piese atunci a castigat rosu
+        if self.red_left <= 0:
+            return main.BLACK
+        elif self.black_left <= 0:
+            return main.RED
+        return None
