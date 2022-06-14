@@ -1,5 +1,6 @@
 import sys
 import time
+import button
 import pygame
 from copy import deepcopy
 
@@ -18,3 +19,4 @@ WHITE = (255, 255, 255)      #pentru a ilustra user ului posibilele mutari     #
 WINDOW = pygame.display.set_mode((WIDTH, HEIGHT))
 pygame.display.set_caption('Mioveni : Dame')
 noMoves = 0
+
