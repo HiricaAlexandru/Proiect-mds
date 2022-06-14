@@ -31,3 +31,23 @@ class Button:
         self.dreptunghi = pygame.Rect(left, top, w, h)
         self.dreptunghiText = self.textRandat.get_rect(center=self.dreptunghi.center)
         self.valoare = valoare
+
+        def selecteaza(self, sel):
+            self.selectat = sel
+            self.deseneaza()
+
+        def selecteazaDupacoord(self, coord):
+            if self.dreptunghi.collidepoint(coord):
+                self.selecteaza(True)
+                return True
+            return False
+
+        def updateDreptunghi(self):
+            self.dreptunghi.left = self.left
+            self.dreptunghi.top = self.top
+            self.dreptunghiText = self.textRandat.get_rect(center=self.dreptunghi.center)
+
+        def deseneaza(self):
+            culoareF = self.culoareFundalSel if self.selectat else self.culoareFundal
+            pygame.draw.rect(self.display, culoareF, self.dreptunghi)
+            self.display.blit(self.textRandat, self.dreptunghiText)
