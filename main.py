@@ -26,6 +26,10 @@ noMoves = 0
 
 ############# ecran initial ########################
 def deseneaza_alegeri(display, tabla_curenta):
+
+    font = pygame.font.Font('arial', 10)
+
+
     btn_alg = GB.GrupButoane(
         top=30,
         left=30,
@@ -45,7 +49,7 @@ def deseneaza_alegeri(display, tabla_curenta):
         indiceSelectat=1,
     )
     btn_dificultate = GB.GrupButoane(
-        top=170,
+        top=230,
         left=30,
         listaButoane=[
             button.Button(display=display, w=180, h=30, text="BEGINNER", valoare="2"),
@@ -55,7 +59,7 @@ def deseneaza_alegeri(display, tabla_curenta):
     )
 
     btn_tip_joc = GB.GrupButoane(
-        top=240,
+        top=300,
         left=30,
         listaButoane=[
             button.Button(display=display, w=180, h=30, text="User vs AI", valoare="cp"),
@@ -67,9 +71,9 @@ def deseneaza_alegeri(display, tabla_curenta):
 
     start = button.Button(
         display=display,
-        top=310,
-        left=30,
-        w=40,
+        top=380,
+        left=0,
+        w=600,
         h=30,
         text="start",
         culoareFundal=RED,
