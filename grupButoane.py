@@ -1,5 +1,4 @@
 import button
-import main
 
 class GrupButoane:
     def __init__(

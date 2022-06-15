@@ -1,13 +1,23 @@
 import board
-import main
 import pygame
+
+# setez valorile pentru culorile pe care le folosesc
+RED = (255, 0, 0)       #pentru a ilustra o piesa rege
+CREAM = (248, 226, 177)     #piesa si patratel
+BLACK = (0, 0, 0)       #piesa si patratel
+WHITE = (255, 255, 255)      #pentru a ilustra user ului posibilele mutari     #pentru a putea distinge piesele negre pe patratele negre
+
+WIDTH, HEIGHT = 600, 600
+ROWS, COLUMNS = 8, 8
+SQUARE_SIZE = WIDTH // COLUMNS
+
 
 class Game:
     #Clasa care se ocupa de gestionarea jocului
     def __init__(self, window, user_color):
         self.selected = None
         self.board = board.Board(user_color)
-        self.turn = main.BLACK       #negrul muta primul asa ca initializez jocul cu negru
+        self.turn = BLACK       #negrul muta primul asa ca initializez jocul cu negru
         self.valid_moves = {}
         self.window = window
         self.noMoves = 0
@@ -20,11 +30,11 @@ class Game:
         else:
             print("Player moves")
 
-        for r in range(main.ROWS):
-            for c in range(main.COLUMNS):
+        for r in range(ROWS):
+            for c in range(COLUMNS):
                 if self.board.board[r][c] == 0:
                     print('#', end=" ")
-                elif self.board.board[r][c].color == main.BLACK:
+                elif self.board.board[r][c].color == BLACK:
                     print('B', end=" ")
                 else:
                     print("W", end=" ")
@@ -41,7 +51,7 @@ class Game:
         # initializez iar jocul
         self.selected = None
         self.board = board.Board(color)
-        self.turn = main.BLACK
+        self.turn = BLACK
         self.valid_moves = {}
 
     def reset(self, color):
@@ -106,9 +116,9 @@ class Game:
         """
         for move in moves:
             row, col = move
-            pygame.draw.circle(self.window, main.WHITE,
-                               (col * main.SQUARE_SIZE + main.SQUARE_SIZE // 2,
-                                row * main.SQUARE_SIZE + main.SQUARE_SIZE // 2),
+            pygame.draw.circle(self.window, WHITE,
+                               (col * SQUARE_SIZE + SQUARE_SIZE // 2,
+                                row * SQUARE_SIZE + SQUARE_SIZE // 2),
                                15)
 
     def winner(self):

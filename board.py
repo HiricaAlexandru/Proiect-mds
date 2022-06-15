@@ -1,15 +1,26 @@
 import pygame
-import main
 import piece
+
+# setez valorile pentru culorile pe care le folosesc
+RED = (255, 0, 0)       #pentru a ilustra o piesa rege
+CREAM = (248, 226, 177)     #piesa si patratel
+BLACK = (0, 0, 0)       #piesa si patratel
+WHITE = (255, 255, 255)      #pentru a ilustra user ului posibilele mutari     #pentru a putea distinge piesele negre pe patratele negre
+
+WIDTH, HEIGHT = 600, 600
+ROWS, COLUMNS = 8, 8
+SQUARE_SIZE = WIDTH // COLUMNS
+
+
 class Board:
 
     def __init__(self, color):
         if color == "BLACK":
-            self.user_color = main.BLACK
-            self.computer_color = main.RED
+            self.user_color = BLACK
+            self.computer_color = RED
         else:
-            self.user_color = main.RED
-            self.computer_color = main.BLACK
+            self.user_color = RED
+            self.computer_color = BLACK
         self.board = []
         # cate piese mai are fiecare jucator
         self.black_left = self.red_left = 12
@@ -23,11 +34,11 @@ class Board:
         Desenez patratelele pe care vor fi pozitionate piesele de joc
         """
         # initial voi avea toate patratele negre
-        window.fill(main.BLACK)
+        window.fill(BLACK)
         # alternez patrate rosi cu patrate negre
-        for row in range(main.ROWS):
-            for col in range(row % 2, main.COLUMNS, 2):
-                pygame.draw.rect(window, main.CREAM, (row * main.SQUARE_SIZE, col * main.SQUARE_SIZE, main.SQUARE_SIZE, main.SQUARE_SIZE))
+        for row in range(ROWS):
+            for col in range(row % 2, COLUMNS, 2):
+                pygame.draw.rect(window, CREAM, (row * SQUARE_SIZE, col * SQUARE_SIZE, SQUARE_SIZE, SQUARE_SIZE))
 
     def move(self, piece, row, col):
         """
@@ -39,10 +50,10 @@ class Board:
         self.board[piece.row][piece.col], self.board[row][col] = self.board[row][col], self.board[piece.row][piece.col]
         piece.move(row, col)
 
-        if row == main.ROWS - 1 or row == 0:
+        if row == ROWS - 1 or row == 0:
             if piece.king is False:
                 piece.make_king()
-                if piece.color == main.RED:
+                if piece.color == RED:
                     self.red_kings += 1
                 else:
                     self.black_kings += 1
@@ -59,9 +70,9 @@ class Board:
         """
         Creez tabla de joc initiala cu toate piesele in pozitiile initiale
         """
-        for row in range(main.ROWS):
+        for row in range(ROWS):
             self.board.append([])
-            for col in range(main.COLUMNS):
+            for col in range(COLUMNS):
                 if col % 2 == ((row + 1) % 2):
                     if row < 3:
                         self.board[row].append(piece.Piece(row, col, self.computer_color))
@@ -78,8 +89,8 @@ class Board:
         Desenez fereastra si piesele
         """
         self.draw_squares(window)
-        for row in range(main.ROWS):
-            for col in range(main.COLUMNS):
+        for row in range(ROWS):
+            for col in range(COLUMNS):
                 piece = self.board[row][col]
                 if piece != 0:
                     piece.draw(window)
@@ -89,9 +100,9 @@ class Board:
         # Daca rosu a ramas fara piese atunci a castigat negru
         # Daca negru a ramas fara piese atunci a castigat rosu
         if self.red_left <= 0:
-            return main.BLACK
+            return BLACK
         elif self.black_left <= 0:
-            return main.RED
+            return RED
         return None
 
     def get_valid_moves(self, piece):
@@ -109,8 +120,8 @@ class Board:
             moves.update(self._look_left(row - 1, max(row - 3, -1), -1, piece.color, left))
             moves.update(self._look_right(row - 1, max(row - 3, -1), -1, piece.color, right))
         if piece.color == self.computer_color or piece.king:
-            moves.update(self._look_left(row + 1, min(row + 3, main.ROWS), 1, piece.color, left))
-            moves.update(self._look_right(row + 1, min(row + 3, main.ROWS), 1, piece.color, right))
+            moves.update(self._look_left(row + 1, min(row + 3, ROWS), 1, piece.color, left))
+            moves.update(self._look_right(row + 1, min(row + 3, ROWS), 1, piece.color, right))
         return moves
 
     def _look_left(self, start, stop, step, color, left, skipped=[]):
@@ -147,7 +158,7 @@ class Board:
                     if step == -1:
                         row = max(r - 3, 0)
                     else:
-                        row = min(r + 3, main.ROWS)
+                        row = min(r + 3, ROWS)
                     moves.update(self._look_left(r + step, row, step, color, left - 1, skipped=last))
                     moves.update(self._look_right(r + step, row, step, color, left + 1, skipped=last))
                 break
@@ -178,7 +189,7 @@ class Board:
         moves = {}
         last = []
         for r in range(start, stop, step):
-            if right >= main.COLUMNS:
+            if right >= COLUMNS:
                 break
 
             current = self.board[r][right]
@@ -194,7 +205,7 @@ class Board:
                     if step == -1:
                         row = max(r - 3, 0)
                     else:
-                        row = min(r + 3, main.ROWS)
+                        row = min(r + 3, ROWS)
                     moves.update(self._look_left(r + step, row, step, color, right - 1, skipped=last))
                     moves.update(self._look_right(r + step, row, step, color, right + 1, skipped=last))
                 break
@@ -212,7 +223,7 @@ class Board:
         for piece in pieces:
             self.board[piece.row][piece.col] = 0
             if piece != 0:
-                if piece.color == main.RED:
+                if piece.color == RED:
                     self.red_left -= 1
                 else:
                     self.black_left -= 1
@@ -221,14 +232,14 @@ class Board:
     #Estimari ale scorului
     def evaluateScore1(self):
             #diferenta de peise, tinand cont de numarul de dame
-        if self.computer_color == main.BLACK:
+        if self.computer_color == BLACK:
             return self.black_left - self.red_left + (self.black_kings * 0.5 - self.red_kings * 0.5)
         else:
             return self.red_left - self.black_left + (self.red_kings * 0.5 - self.black_kings * 0.5)
 
     def evaluateScore2(self):
         # diferenta de peise far aa tine cont de numarul de dame
-        if self.computer_color == main.BLACK:
+        if self.computer_color == BLACK:
             return self.black_left - self.red_left
         else:
             return self.red_left - self.black_left
