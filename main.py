@@ -21,26 +21,54 @@ WHITE = (255, 255, 255)      #pentru a ilustra user ului posibilele mutari     #
 
 WINDOW = pygame.display.set_mode((WIDTH, HEIGHT))
 pygame.display.set_caption('Mioveni : Dame')
+
+bg = pygame.image.load("splash_screen.jpg")
+WINDOW.blit(bg, (0,0))
+
 noMoves = 0
 
 
 ############# ecran initial ########################
 def deseneaza_alegeri(display, tabla_curenta):
 
-    font = pygame.font.Font('arial', 10)
+    font = pygame.font.Font(None, 30)
+    
+    game_name = font.render("Mioveni : Dame",
+                                True, (255,255,255))
 
+    display.blit(game_name, (210,30))
+
+    algorithm_choice = font.render("Choose algorithm",
+                                True, (255,255,255))
+    
+    display.blit(algorithm_choice, (360,200))
+
+    choose_side = font.render("Choose side",
+                                True, (255,255,255))
+
+    display.blit(choose_side,(30,190))
+
+    difficulty = font.render("Choose difficulty",
+                                True, (255,255,255))
+
+    display.blit(difficulty,(30,280))
+
+    game_mode = font.render("Choose game-mode",
+                                True, (255,255,255))
+
+    display.blit(game_mode,(30,360))
 
     btn_alg = GB.GrupButoane(
-        top=30,
-        left=30,
+        top=250,
+        left=380,
         listaButoane=[
             button.Button(display=display, w=80, h=30, text="MINIMAX", valoare="minimax"),
-            button.Button(display=display, w=80, h=30, text="ALPHABETA", valoare="alphabeta"),
+            button.Button(display=display, w=120, h=30, text="ALPHABETA", valoare="alphabeta"),
         ],
         indiceSelectat=0,
     )
     btn_juc = GB.GrupButoane(
-        top=100,
+        top=220,
         left=30,
         listaButoane=[
             button.Button(display=display, w=80, h=30, text="BLACK", valoare="BLACK"),
@@ -49,7 +77,7 @@ def deseneaza_alegeri(display, tabla_curenta):
         indiceSelectat=1,
     )
     btn_dificultate = GB.GrupButoane(
-        top=230,
+        top=320,
         left=30,
         listaButoane=[
             button.Button(display=display, w=180, h=30, text="BEGINNER", valoare="2"),
@@ -59,7 +87,7 @@ def deseneaza_alegeri(display, tabla_curenta):
     )
 
     btn_tip_joc = GB.GrupButoane(
-        top=300,
+        top=390,
         left=30,
         listaButoane=[
             button.Button(display=display, w=180, h=30, text="User vs AI", valoare="cp"),
@@ -71,7 +99,7 @@ def deseneaza_alegeri(display, tabla_curenta):
 
     start = button.Button(
         display=display,
-        top=380,
+        top=470,
         left=0,
         w=600,
         h=30,
@@ -113,7 +141,7 @@ def main():
     run = True
     game = gme.Game(WINDOW, "CREAM")
     color, algorithm, depth, game_type = deseneaza_alegeri(WINDOW, game)
-    pygame.mixer.music.load('Proiect-mds\muzica_populara.wav')
+    pygame.mixer.music.load('muzica_populara.wav')
     pygame.mixer.music.play(-1)
 
     
