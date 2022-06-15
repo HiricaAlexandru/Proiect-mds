@@ -109,6 +109,10 @@ def main():
     run = True
     game = gme.Game(WINDOW, "CREAM")
     color, algorithm, depth, game_type = deseneaza_alegeri(WINDOW, game)
+    pygame.mixer.music.load('Proiect-mds\muzica_populara.wav')
+    pygame.mixer.music.play(-1)
+
+    
     if color == "BLACK":
         user_color = BLACK
         computer_color = RED
@@ -251,7 +255,7 @@ def main():
                     game.computerMove(new_board)
 
             game.update()
-
+        
         pygame.quit()
 
 main()
