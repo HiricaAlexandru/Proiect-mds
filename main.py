@@ -31,7 +31,7 @@ noMoves = 0
 ############# ecran initial ########################
 def deseneaza_alegeri(display, tabla_curenta):
 
-    font = pygame.font.Font(None, 30)
+    font = pygame.font.Font(None, 40)
     
     game_name = font.render("Mioveni : Dame",
                                 True, (255,255,255))
